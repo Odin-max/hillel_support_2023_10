@@ -35,5 +35,5 @@ src_paths = ["src"]
 plugins = "pydantic.mypy"
 
 [mypy.plugins.pydantic]
-custom_error = pydantic.error_wrappers.ValidationError
+custom_error = "pydantic.error_wrappers.ValidationError"
 ignore_missing_imports = true
