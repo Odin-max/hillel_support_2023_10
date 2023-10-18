@@ -1,0 +1,10 @@
+__pycache__/
+
+
+# Editors 
+.vscode
+.idea
+
+
+# Storages
+*.sqlite3

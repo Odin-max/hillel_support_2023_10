@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Django = "~=4.2"
+requests = "~=2.31"
+pydantic = "~=2.4"
+
+[dev-packages]
+black = "~=23.7"
+grequests = "*"
+ipdb = "*"
+isort = "~=5.12"
+mypy = "*"
+pympler = "~=1.0"
+ruff = "~=0.0.242"
+
+[requires]
+python_version = "3.11"
+
+
+[scripts]
+app = "python src/manage.py runserver"

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exchange Rates</title>
+  </head>
+  <body>
+    <h1 style="text-align: center">Exchange Rates</h1>
+    <form id="exchangeForm">
+      <label for="currencyFrom">Source Currency:</label>
+      <input type="text" id="currencyFrom" name="currencyFrom" required />
+      <br />
+      <label for="currencyTo">Destination Currency:</label>
+      <input type="text" id="currencyTo" name="currencyTo" required />
+      <br />
+      <button type="submit">Get Exchange Rate</button>
+    </form>
+    <div>
+      <div id="exchangeRates">
+        <h1 id="sourceCurrency">Source Currency:</h1>
+        <h1 id="destinationCurrency">Destination Currency:</h1>
+        <h1 id="rate">Rate:</h1>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById('exchangeForm')
+      const sourceCurrencyItem = document.getElementById('sourceCurrency')
+      const destinationCurrencyItem = document.getElementById(
+        'destinationCurrency',
+      )
+      const rateItem = document.getElementById('rate')
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        const currencyFrom = document.getElementById('currencyFrom').value
+        const currencyTo = document.getElementById('currencyTo').value
+        const url = `http://localhost:8000/exchange-rates/?currency_from=${currencyFrom}&currency_to=${currencyTo}`
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+            sourceCurrencyItem.innerHTML = `Source Currency: ${data.results.currency_from}`
+            destinationCurrencyItem.innerHTML = `Destination Currency: ${data.results.currency_to}`
+            rateItem.innerHTML = `Rate: ${data.results.rate}`
+          })
+          .catch((error) => {
+            console.error(error)
+          })
+      })
+    </script>
+  </body>
+</html>
