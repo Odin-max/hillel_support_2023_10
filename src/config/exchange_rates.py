@@ -1,4 +1,4 @@
-import requests # type: ignore
+import requests  # type: ignore
 from django.http import JsonResponse  # type: ignore
 from pydantic import BaseModel, Field
 
@@ -42,8 +42,6 @@ def fetch_currency_exchange_rates(
     response = AlphavantageCurrencyExchangeRatesResponse(**raw_response.json())
 
     return response
-
-
 
 
 def exchange_rates(request) -> JsonResponse:
