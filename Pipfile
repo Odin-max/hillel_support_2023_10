@@ -6,7 +6,12 @@ name = "pypi"
 [packages]
 Django = "~=4.2"
 requests = "~=2.31"
-pydantic = "~=2.4"
+pydantic = "*"
+ruff = "*"
+black = "*"
+isort = "*"
+mypy = "*"
+pre-commit = "*"
 
 [dev-packages]
 black = "~=23.7"
@@ -19,7 +24,6 @@ ruff = "~=0.0.242"
 
 [requires]
 python_version = "3.11"
-
 
 [scripts]
 app = "python src/manage.py runserver"
