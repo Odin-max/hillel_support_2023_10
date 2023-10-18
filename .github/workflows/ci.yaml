@@ -11,13 +11,9 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-    - name: Installing pipenv
-      run: pipenv install
-    - name: Running pipenv
-      run: pipenv shell
     - name: Install dependencies
-      run: pipenv install ruff black isort mypy
+      run: pip install ruff black isort mypy
     - name: Run linter
-      run: ruff check . && mypy .
+      run: ruff check . && mypy . 
     - name: Run formatters
       run: black --check -t py311 . && isort .   
