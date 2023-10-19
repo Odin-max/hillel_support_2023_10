@@ -1,8 +1,8 @@
-import json
+import json # type: ignore
 
-import requests
+import requests # type: ignore
 from django.http import JsonResponse  # type: ignore
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field # type: ignore
 
 API_KEY = "HDKIKI6WAC2J677G"
 BASE_URL = "https://www.alphavantage.co"
