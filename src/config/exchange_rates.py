@@ -1,4 +1,6 @@
-import requests  # type: ignore
+import json
+
+import requests
 from django.http import JsonResponse  # type: ignore
 from pydantic import BaseModel, Field
 
@@ -26,10 +28,6 @@ class AlphavantageCurrencyExchangeRatesResponse(BaseModel):
 def fetch_currency_exchange_rates(
     schema: AlphavantageCurrencyExchangeRatesRequest,
 ) -> AlphavantageCurrencyExchangeRatesResponse:
-    """This function claims the currency exchange rate information
-    from the external service: Alphavantage.
-    """
-
     payload: str = (
         "/query?function=CURRENCY_EXCHANGE_RATE&"
         f"from_currency={schema.currency_from.upper()}&"
@@ -40,6 +38,12 @@ def fetch_currency_exchange_rates(
 
     raw_response: requests.Response = requests.get(url)
     response = AlphavantageCurrencyExchangeRatesResponse(**raw_response.json())
+
+    # Save the response to a JSON file
+    response_data = response.model_dump()
+    with open("history.json", "a") as history_file:
+        json.dump(response_data, history_file)
+        history_file.write("\n")
 
     return response
 
@@ -56,8 +60,14 @@ def exchange_rates(request) -> JsonResponse:
     )
 
     headers: dict = {
-        # "Content-Type": "application/json", # for http response
         "Access-Control-Allow-Origin": "*",
     }
 
     return JsonResponse(data=result.model_dump(), headers=headers)
+
+
+def exchange_rate_history(request):
+    with open("history.json", "r") as history_file:
+        history_data = [json.loads(line) for line in history_file]
+
+    return JsonResponse(data=history_data, safe=False)
