@@ -6,17 +6,6 @@ from django.views.decorators.csrf import csrf_exempt  # type: ignore
 from .models import Issues, User  # type: ignore
 
 
-def all(request):
-    users = User.objects.all()
-    attrs = {"id", "email", "first_name", "last_name", "password", "role"}
-    results: list[dict] = []
-    for user in users:
-        payload = {attr: getattr(user, attr) for attr in attrs}
-        results.append(payload)
-
-    return JsonResponse({"result": results})
-
-
 def create(request):
     if request.method != "POST":
         raise NotImplementedError("Only POST request")
