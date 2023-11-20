@@ -1,11 +1,14 @@
 # mypy: ignore-errors
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 
-from shared.django import TimeStampMixIn
+from shared.django import TimestampMixin
+
+User = get_user_model()
 
 
-class Issue(TimeStampMixIn):
+class Issue(TimestampMixin):
     title = models.CharField(max_length=30)
     body = models.CharField(max_length=255)
     status = models.CharField(max_length=10)
@@ -25,7 +28,14 @@ class Issue(TimeStampMixIn):
         db_table = "issues"
 
 
-class Message(TimeStampMixIn):
+# issue: Issue = Issue.objects.first()
+# issue.junior: ==> users.User
+
+# john: User = User.objects.get(email='john@email.com')
+# john.issues.first().messages.all()
+
+
+class Message(TimestampMixin):
     content = models.CharField(max_length=100)
 
     author = models.ForeignKey(

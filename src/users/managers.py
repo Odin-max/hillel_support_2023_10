@@ -9,7 +9,8 @@ class UserManager(BaseUserManager):
     def _create_user(
         self, email: str, password: str | None = None, **extra_fields
     ):
-        email = self.normalize_email(email=email)
+        """Create and save a user with the given email and password."""
+
         user = self.model(
             email=self.normalize_email(email=email), **extra_fields
         )

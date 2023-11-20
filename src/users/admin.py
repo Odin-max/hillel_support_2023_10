@@ -13,6 +13,7 @@ class UserAdmin(admin.ModelAdmin):
         "date_joined",
         "last_login",
         "is_superuser",
+        "is_staff",
         "is_active",
         "username",
         "email",
