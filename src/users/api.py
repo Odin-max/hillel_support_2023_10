@@ -1,65 +1,57 @@
-import json  # type: ignore
+# mypy: ignore-errors
+import json
 
-from django.http import JsonResponse  # type: ignore
-from django.views.decorators.csrf import csrf_exempt  # type: ignore
+from django.http import JsonResponse
+from rest_framework import permissions, serializers
+from rest_framework.generics import CreateAPIView, GenericAPIView
 
-from .models import Issues, User  # type: ignore
+from .models import User
 
 
+# FBV
 def create(request):
     if request.method != "POST":
-        raise NotImplementedError("Only POST request")
+        raise NotImplementedError("Only POST requests")
 
     data: dict = json.loads(request.body)
     user: User = User.objects.create(**data)
 
     if not user:
         raise Exception("Can not create user")
+
     # convert to dict
     attrs = {"id", "email", "first_name", "last_name", "password", "role"}
     payload = {attr: getattr(user, attr) for attr in attrs}
-    return JsonResponse({payload})
+
+    return JsonResponse(payload)
 
 
-@csrf_exempt
-def create_issue(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "Only POST requests are allowed"})
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["email", "password", "first_name", "last_name"]
+        # fields = "__all__"
 
-    data = json.loads(request.body)
-    issue = Issues.objects.create(**data)
-
-    if not issue:
-        return JsonResponse({"Error": "Failed to create issue"})
-    issue_data = {
-        "title": issue.title,
-        "body": issue.body,
-        "timestamp": issue.timestamp,
-        "junior_id": issue.junior_id,
-        "senior_id": issue.senior_id,
-        "status": issue.status,
-    }
-
-    return JsonResponse({"issue": issue_data})
+    # def validate_<field>(self, value: Any) -> Any:
+    #     return value
 
 
-@csrf_exempt
-def get_issues(request):
-    if request.method != "GET":
-        return JsonResponse({"error": "Only GET requests are allowed"})
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "first_name", "last_name"]
 
-    issues = Issues.objects.all()
 
-    issue_list = []
+# CBF
+class UserCreateAPI(CreateAPIView):
+    serializer_class = UserRegistrationSerializer
+    queryset = User.objects.all()
+    permission_classes = [permissions.AllowAny]
 
-    for issue in issues:
-        issue_data = {
-            "title": issue.title,
-            "body": issue.body,
-            "timestamp": issue.timestamp,
-            "junior_id": issue.junior_id,
-            "senior_id": issue.senior_id,
-            "status": issue.status,
-        }
-    issue_list.append(issue_data)
-    return JsonResponse({"issues": issue_list})
+
+class UserRetrieveAPI(GenericAPIView):
+    serializer_class = UserRegistrationSerializer
+    queryset = User.objects.all()
+
+    def get(self, request):
+        return super().get(request)
