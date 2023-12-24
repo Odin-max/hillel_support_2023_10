@@ -22,6 +22,7 @@ class Issue(TimestampMixin):
         settings.AUTH_USER_MODEL,
         on_delete=models.DO_NOTHING,
         related_name="senior_issues",
+        null=True,
     )
 
     class Meta:

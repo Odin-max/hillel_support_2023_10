@@ -1,6 +1,7 @@
 # mypy: ignore-errors
 import json
 
+from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from rest_framework import permissions, serializers
 from rest_framework.generics import CreateAPIView, GenericAPIView
@@ -32,8 +33,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ["email", "password", "first_name", "last_name"]
         # fields = "__all__"
 
-    # def validate_<field>(self, value: Any) -> Any:
-    #     return value
+    def validate(self, attrs: dict) -> dict:
+        attrs["password"] = make_password(attrs["password"])
+
+        return attrs
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -45,7 +48,6 @@ class UserSerializer(serializers.ModelSerializer):
 # CBF
 class UserCreateAPI(CreateAPIView):
     serializer_class = UserRegistrationSerializer
-    queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
 
 
