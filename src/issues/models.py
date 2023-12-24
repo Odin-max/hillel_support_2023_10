@@ -1,10 +1,9 @@
 # mypy: ignore-errors
-from django.db import models
-from shared.django import TimestampMixin
-from .constants import Status
 from django.conf import settings
-
 from django.contrib.auth import get_user_model
+from django.db import models
+
+from shared.django import TimestampMixin
 
 User = get_user_model()
 
@@ -23,7 +22,7 @@ class Issue(TimestampMixin):
         settings.AUTH_USER_MODEL,
         on_delete=models.DO_NOTHING,
         related_name="senior_issues",
-        null=True
+        null=True,
     )
 
     class Meta:
@@ -41,7 +40,9 @@ class Message(TimestampMixin):
     content = models.CharField(max_length=100)
 
     author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING, related_name="messages"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.DO_NOTHING,
+        related_name="messages",
     )
     issue = models.ForeignKey(
         "issues.Issue", on_delete=models.DO_NOTHING, related_name="messages"
@@ -49,4 +50,3 @@ class Message(TimestampMixin):
 
     class Meta:
         db_table = "issues_messages"
-        

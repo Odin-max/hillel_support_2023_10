@@ -1,3 +1,4 @@
+# mypy: ignore-errors
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
@@ -10,7 +11,6 @@ router.register("", IssueApiSet, basename="issues")
 
 messages_urls = [
     path("<int:issue_id>/messages/create/", MessageCreateAPI.as_view())
-
 ]
 
 urlpatterns = router.urls + messages_urls

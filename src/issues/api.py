@@ -1,13 +1,22 @@
-from rest_framework.viewsets import ModelViewSet
+# mypy: ignore-errors
 from rest_framework.generics import CreateAPIView
+from rest_framework.viewsets import ModelViewSet
 
-from .permissions import RoleIsAdmin, RoleIsJunior, RoleIsSenior, IssueParticipant
 from .models import Issue
-from .serializers import IssueCreateSerializer, IssueReadonlySerializer, MessageSerializer
+from .permissions import (
+    IssueParticipant,
+    RoleIsAdmin,
+    RoleIsJunior,
+    RoleIsSenior,
+)
+from .serializers import (
+    IssueCreateSerializer,
+    IssueReadonlySerializer,
+    MessageSerializer,
+)
 
 
 class IssueApiSet(ModelViewSet):
-
     queryset = Issue.objects.all()
     # permission_classes = [RoleIsAdmin]
 
@@ -26,13 +35,11 @@ class IssueApiSet(ModelViewSet):
             permission_classes = []
 
         return [permission() for permission in permission_classes]
-        
 
     def get_serializer_class(self):
         if self.action == "create":
             return IssueCreateSerializer
         return IssueReadonlySerializer
-
 
 
 class MessageCreateAPI(CreateAPIView):
