@@ -1,9 +1,16 @@
 # mypy: ignore-errors
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 from users.constants import Role
 
 from .models import Issue
+
+
+class IsSeniorOrJuniorParticipant(BasePermission):
+    def has_object_permission(self, request, view, issue: Issue):
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user in (issue.junior, issue.senior)
 
 
 class RoleIsSenior(BasePermission):

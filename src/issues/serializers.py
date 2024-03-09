@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from .constants import Status
 from .models import Issue, Message
+from .permissions import IssueParticipant
 
 
 class IssueReadonlySerializer(serializers.ModelSerializer):
@@ -35,11 +36,15 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs: dict) -> dict:
         request = self.context["request"]
-        issue_id: int = request.parser_context["kwargs"]["issue_id"]
+        issue_id = request.parser_context["kwargs"]["issue_id"]
         issue: Issue = Issue.objects.get(id=issue_id)
 
-        # Augmentation the attrs dictionary
-        attrs["issue"] = issue
-        attrs["author"] = request.user
+        if not IssueParticipant().has_object_permission(request, None, issue):
+            raise serializers.ValidationError(
+                "You do not have permission for this issue."
+            )
+
+        attrs["issue"] = issue  # Explicitly set the issue
+        attrs["author"] = request.user  # Automatically set author
 
         return attrs

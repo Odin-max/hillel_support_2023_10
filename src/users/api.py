@@ -15,6 +15,7 @@ def create(request):
         raise NotImplementedError("Only POST requests")
 
     data: dict = json.loads(request.body)
+    # role = data.get("role", "default_role")
     user: User = User.objects.create(**data)
 
     if not user:
@@ -28,9 +29,13 @@ def create(request):
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
+    role = serializers.ChoiceField(
+        choices=["junior", "senior"], required=False, default="junior"
+    )
+
     class Meta:
         model = User
-        fields = ["email", "password", "first_name", "last_name"]
+        fields = ["email", "password", "first_name", "last_name", "role"]
         # fields = "__all__"
 
     def validate(self, attrs: dict) -> dict:
