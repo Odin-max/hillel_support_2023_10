@@ -29,8 +29,6 @@ class Issue(TimestampMixin):
         db_table = "issues"
 
 
-
-
 # issue: Issue = Issue.objects.first()
 # issue.junior: ==> users.User
 

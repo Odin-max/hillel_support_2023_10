@@ -29,11 +29,13 @@ def create(request):
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    role = serializers.ChoiceField(choices=["junior", "senior"], required = False, default="junior")
+    role = serializers.ChoiceField(
+        choices=["junior", "senior"], required=False, default="junior"
+    )
 
     class Meta:
         model = User
-        fields = ["email", "password", "first_name", "last_name","role"]
+        fields = ["email", "password", "first_name", "last_name", "role"]
         # fields = "__all__"
 
     def validate(self, attrs: dict) -> dict:
