@@ -15,7 +15,7 @@ def create(request):
         raise NotImplementedError("Only POST requests")
 
     data: dict = json.loads(request.body)
-    role = data.get("role", "default_role")
+    # role = data.get("role", "default_role")
     user: User = User.objects.create(**data)
 
     if not user:
