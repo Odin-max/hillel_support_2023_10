@@ -21,6 +21,7 @@ isort = "~=5.12"
 mypy = "*"
 pympler = "~=1.0"
 ruff = "~=0.0.242"
+django-stubs = "~=4.2.7"
 
 [requires]
 python_version = "3.11"

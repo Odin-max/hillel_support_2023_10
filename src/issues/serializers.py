@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from .models import Issue, Message
 from .constants import Status
-
+from .permissions import IssueParticipant
 
 class IssueReadonlySerializer(serializers.ModelSerializer):
     class Meta:
@@ -35,9 +35,15 @@ class MessageSerializer(serializers.ModelSerializer):
         read_only_fields = ["issue", "author", "id"]
 
     def validate(self, attrs: dict) -> dict:
-        breakpoint()
         request = self.context["request"]
         issue_id = request.parser_context["kwargs"]['issue_id']
         issue: Issue = Issue.objects.get(id=issue_id)
+
+        if not IssueParticipant().has_object_permission(request, None, issue):
+            raise serializers.ValidationError("You do not have permission for this issue.")
+
+        attrs["issue"] = issue  # Explicitly set the issue 
+        attrs["author"] = request.user  # Automatically set author
+
 
         return attrs
