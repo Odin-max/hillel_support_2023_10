@@ -1,6 +1,7 @@
 # mypy: ignore-errors
-
+import os
 from datetime import timedelta
+from distutils.util import strtobool
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -10,16 +11,20 @@ ROOT_DIR = SRC_DIR.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
-    "django-insecure-5o+t0dckhc%3)b6hck&k#&i@o2zxmn3idcoemk4rvy_v)t5bnl"
-)
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", default="insecure")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = os.getenv("DJANGO_DEBUG")
+DEBUG = strtobool(os.getenv("DJANGO_DEBUG"), default=False)
 
-ALLOWED_HOSTS = []
 
+# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    element
+    for element in os.getenv("DJANGO_ALLOWED_HOSTS").split(",")
+    if element
+]
 
 # Application definition
 
@@ -143,3 +148,9 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
+CELERY_BROKER_URL = "redis://localhost:6379//"
+# CELERY_RESULT_BACKEND ='redis://localhost:6379//'
