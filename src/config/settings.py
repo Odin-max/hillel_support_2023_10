@@ -16,13 +16,13 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", default="insecure")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.getenv("DJANGO_DEBUG")
-DEBUG = strtobool(os.getenv("DJANGO_DEBUG"), default=False)
+DEBUG = strtobool(os.getenv("DJANGO_DEBUG", "false"))
 
 
 # ALLOWED_HOSTS = ["*"]
 ALLOWED_HOSTS = [
     element
-    for element in os.getenv("DJANGO_ALLOWED_HOSTS").split(",")
+    for element in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
     if element
 ]
 
@@ -74,13 +74,23 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ROOT_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DJANGO_DATABASE_NAME", default="postgres"),
+        "USER": os.getenv("DJANGO_DATABASE_USER", default="postgres"),
+        "PASSWORD": os.getenv("DJANGO_DATABASE_PASSWORD", default="postgres"),
+        "HOST": os.getenv("DJANGO_DATABASE_HOST", default="database"),
+        "PORT": os.getenv("DJANGO_DATABASE_USER", default="5432"),
     }
 }
+# Simple database, using sqlite3
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": ROOT_DIR / "db.sqlite3",
+#     }
+# }
 
 
 # Password validation
@@ -152,5 +162,8 @@ SIMPLE_JWT = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
-CELERY_BROKER_URL = "redis://localhost:6379//"
-# CELERY_RESULT_BACKEND ='redis://localhost:6379//'
+CELERY_BROKER_URL = os.getenv(
+    "DJANGO_CELERY_BROKER_URL", default="redis://broker:6379/0"
+)
+
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL

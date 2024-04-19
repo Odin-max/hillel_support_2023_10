@@ -1,0 +1,11 @@
+.github/
+.mypy/
+.ruff_chache/
+.vscode/
+deprecated/
+frontend/
+db.sqlite3
+.gitignore
+docker-compose.yml
+Dockerfile
+*.md

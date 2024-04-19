@@ -2,6 +2,26 @@ version: '3'
 
 
 services:
+
+  broker:
+    image: "redis"
+    container_name: hillel_support_broker
+    # Need to be deleted for more safety
+    # ports:
+    #   - "6379:6379"
+
+  database:
+    image: "postgres:16"
+    container_name: hillel_support_db
+    # Need to be deleted for more safety
+    # ports:
+    #   - "5432:5432"
+    env_file: ".env"
+    volumes:
+      - "pg_data:/var/lib/postgresql/data"
+    # environment:
+    #   - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
   app:
     build: 
       context: .
@@ -11,5 +31,11 @@ services:
     volumes:
       - ".:/app/"
     ports:
-      - "7000:8000"
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      - database
+      - broker
 
+volumes:
+  pg_data: {}

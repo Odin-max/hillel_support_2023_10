@@ -16,11 +16,12 @@ RUN apt-get update -y \
 COPY ./Pipfile ./Pipfile.lock /
 RUN pipenv sync --dev --system 
 
-WORKDIR /app/
 
+WORKDIR /app/
+COPY ./ ./
 
 ENTRYPOINT [ "gunicorn" ]
-CMD ["--workers=2", "src.config:application", "--bind=0.0.0.0:8000" ]
+CMD ["--workers=2", "config.wsgi:application", "--bind=0.0.0.0:8000" ]
 
 # Another variant:
 # CMD python src/manage.py runserver 0.0.0.0:8000
